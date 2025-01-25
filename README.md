@@ -1,4 +1,4 @@
-# Water Bucket Challenge
+# Water Tank Challenge
 
 - We have magical system of connected water tanks. Each tank can hold 100L of water
 - Every tank has an "Add Water" button, if the button is pressed down continuosly, then every 1s, it adds 200L of water in the tank, if the tank is not already full.
