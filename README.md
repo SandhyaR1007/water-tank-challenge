@@ -1,8 +1,6 @@
-# React + Vite
+# Water Bucket Challenge
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- We have magical system of connected water tanks. Each tank can hold 100L of water
+- Every tank has an "Add Water" button, if the button is pressed down continuosly, then every 1s, it adds 200L of water in the tank, if the tank is not already full.
+- The water levels in each tank will eventually settle to the same height. The water moves in or out of any tank at rate of 25L/second.
+- Every tank also has a "Empty tank" button. When clicked, it will remove all the water from the tank in an instant.
