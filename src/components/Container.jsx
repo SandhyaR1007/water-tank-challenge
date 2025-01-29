@@ -3,9 +3,9 @@ import Tank from "./Tank";
 
 const Container = () => {
   const [tanks, setTanks] = useState([0, 0, 0, 0]);
-  const handleEquate = () => {
-    const portion = Math.floor(Math.max(...tanks) / 4);
+  const [portion, setPortion] = useState(0);
 
+  const handleEquate = () => {
     setTanks((prevTanks) =>
       prevTanks.map((w, i) =>
         w !== portion ? w + handleWaterLevel(w, portion) : w
@@ -36,6 +36,7 @@ const Container = () => {
           tanks={tanks}
           index={i}
           handleEquate={handleEquate}
+          setPortion={setPortion}
         />
       ))}
     </div>
