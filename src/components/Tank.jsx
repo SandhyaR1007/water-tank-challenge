@@ -1,53 +1,72 @@
 import React, { useRef, useEffect, useState } from "react";
 
-const Tank = ({ tanks, setTanks, index, handleEquate }) => {
+const Tank = ({ tanks, setTanks, index, handleEquate, setPortion }) => {
   const tanksRef = useRef(tanks);
   const btnRef = useRef(null);
   const intervalRef = useRef();
+  const [canEmpty, setCanEmpty] = useState(false);
   function addWater() {
     if (tanksRef.current[index] >= 500) return;
+    const updatedVal = tanksRef.current.map((w, i) =>
+      i === index ? w + 100 : w
+    );
+    setPortion(
+      (updatedVal.reduce((acc, curr) => acc + curr, 0) / 4).toFixed(2)
+    );
     setTanks((prevVal) => prevVal.map((w, i) => (i === index ? w + 100 : w)));
   }
-  function emptyWater() {
-    setTanks((prevVal) => prevVal.map((w, i) => (i === index ? 0 : w)));
-  }
+  const emptyWater = () => {
+    const newVal = tanks.map((w, i) => (i === index ? 0 : w));
+    setPortion((newVal.reduce((acc, curr) => acc + curr, 0) / 4).toFixed(2));
+    setTanks(newVal);
+    setCanEmpty(true);
+  };
   useEffect(() => {
     tanksRef.current = tanks;
   }, [tanks]);
+  useEffect(() => {
+    if (canEmpty) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(() => {
+        if (new Set(tanksRef.current).size === 1) {
+          clearInterval(intervalRef.current);
+          setCanEmpty(false);
+          return;
+        }
+
+        handleEquate();
+      }, 1000);
+    }
+  }, [canEmpty, tanks]);
 
   useEffect(() => {
-    const initialTime = Date.now();
+    let id;
+
     function handleAddWater() {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      const initialTime = Date.now();
+
       intervalRef.current = setInterval(() => {
         if (tanksRef.current[index] >= 500) {
           clearInterval(intervalRef.current);
           return;
         }
-        if (Date.now() - initialTime >= 1000) {
+        const currentTime = Date.now();
+        if (currentTime - initialTime >= 1000) {
           addWater();
+          initialTime = currentTime; // Reset the initial time after adding water
         }
       }, 1000);
     }
 
     btnRef?.current?.addEventListener("mousedown", handleAddWater);
-    btnRef?.current?.addEventListener("mouseout", () => {
-      clearInterval(intervalRef.current);
-      intervalRef.current = setInterval(() => {
-        if (new Set(tanksRef.current).size === 1) {
-          clearInterval(intervalRef.current);
-          return;
-        }
-        handleEquate();
-      }, 1000);
+    btnRef?.current?.addEventListener("mouseup", () => {
+      setCanEmpty(true);
     });
     return () => {
       btnRef?.current?.removeEventListener("mousedown", handleAddWater);
-      btnRef?.current?.removeEventListener("mouseout", handleEquate);
+      btnRef?.current?.removeEventListener("mouseup", setCanEmpty);
     };
-  }, [tanks, emptyWater]);
+  }, [tanks]);
 
   return (
     <div>
@@ -57,9 +76,7 @@ const Tank = ({ tanks, setTanks, index, handleEquate }) => {
       </div>
       <div>
         <button onClick={emptyWater}>Empty</button>
-        <button ref={btnRef} onClick={addWater}>
-          Add
-        </button>
+        <button ref={btnRef}>Add</button>
       </div>
     </div>
   );
